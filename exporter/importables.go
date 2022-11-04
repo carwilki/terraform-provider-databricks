@@ -953,16 +953,35 @@ var resourcesMap map[string]importable = map[string]importable{
 		Name: func(d *schema.ResourceData) string {
 			return globalWorkspaceConfName
 		},
+		List: func(ic *importContext) error {
+			ic.Emit(&resource{
+				Resource: "databricks_workspace_conf",
+				ID:       globalWorkspaceConfName,
+				Data: ic.Resources["databricks_workspace_conf"].Data(
+					&terraform.InstanceState{
+						ID:         globalWorkspaceConfName,
+						Attributes: map[string]string{},
+					}),
+			})
+			return nil
+		},
 		Import: func(ic *importContext, r *resource) error {
 			wsConfAPI := workspace.NewWorkspaceConfAPI(ic.Context, ic.Client)
 			keys := map[string]any{
-				"enableIpAccessLists":  false,
-				"maxTokenLifetimeDays": 0,
-				"enableTokensConfig":   false,
+				"enableIpAccessLists":                              false,
+				"maxTokenLifetimeDays":                             0,
+				"enableTokensConfig":                               false,
+				"storeInteractiveNotebookResultsInCustomerAccount": false,
+				"maxUserInactiveDays":                              0,
 			}
 			err := wsConfAPI.Read(&keys)
 			if err != nil {
 				return err
+			}
+			for k, _ := range keys {
+				if keys[k] == nil {
+					delete(keys, k)
+				}
 			}
 			r.Data.Set("custom_config", keys)
 			return nil
