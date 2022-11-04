@@ -978,8 +978,8 @@ var resourcesMap map[string]importable = map[string]importable{
 			if err != nil {
 				return err
 			}
-			for k, _ := range keys {
-				if keys[k] == nil {
+			for k, v := range keys {
+				if v == nil {
 					delete(keys, k)
 				}
 			}
