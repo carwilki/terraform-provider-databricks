@@ -957,11 +957,6 @@ var resourcesMap map[string]importable = map[string]importable{
 			ic.Emit(&resource{
 				Resource: "databricks_workspace_conf",
 				ID:       globalWorkspaceConfName,
-				Data: ic.Resources["databricks_workspace_conf"].Data(
-					&terraform.InstanceState{
-						ID:         globalWorkspaceConfName,
-						Attributes: map[string]string{},
-					}),
 			})
 			return nil
 		},
